@@ -1,3 +1,3 @@
 <template>
-  <h1 class="font-secondary font-bold underline">Hello world!</h1>
+  <router-view />
 </template>
