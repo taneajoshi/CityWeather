@@ -1,21 +1,21 @@
 <template>
   <!-- Instead of page component as a wrapper (which includes header with slot , main and footer structure) using a heading for saving time. -->
-  <h1 class="text-2xl font-bold p-5">Weather Dashboard</h1>
+  <h1 class="text-2xl font-bold p-5 bg-blue-900 text-white">Weather Dashboard</h1>
   <div class="container mx-auto p-5">
     <div class="minHeight flex items-center justify-center">
-      <div class="p-5 w-full sm:w-2/4 bg-white rounded-lg shadow-md">
+      <div class="p-5 w-full sm:w-4/6 bg-white rounded-lg shadow-md">
         <h2 class="font-semibold mb-2">Enter a city</h2>
-        <form>
+        <form @submit.prevent>
           <input
             v-model="searchQuery"
             @input.prevent="searchCitiesHandler"
             placeholder="Enter a city"
-            class="w-full p-2 border rounded focus:outline-none"
+            class="w-full p-2 border rounded-lg focus:outline-none shadow-md"
           />
         </form>
 
         <!-- Search Results -->
-        <div v-if="searchResults.length > 0" class="mt-4">
+        <div v-if="searchResults.length > 0" class="mt-4 border p-4 rounded-lg bg-white">
           <SearchResultComponent
             :searchResults="searchResults"
             :selectCityHandler="selectCityHandler"
@@ -34,7 +34,7 @@
         />
         <!-- /Details Sidebar -->
 
-        <div v-if="error" class="mt-4 text-red-600">{{ error }}</div>
+        <div v-if="error" class="mt-4 p-2 bg-red-100 text-red-600 rounded-lg">{{ error }}</div>
       </div>
     </div>
   </div>
@@ -53,15 +53,18 @@ import SearchResultComponent from "../components/SearchResultComponent.vue";
 const searchQuery = ref("");
 const searchResults = ref<SearchResultInterface[]>([]);
 const selectedCity = ref<CityInterface | null>(null);
-const error = ref<string | null>(null);
+  const error = ref(null);
 const selectedCityName = ref<string | null>(null);
 const showSidebar = ref<boolean>(false);
-const DEBOUNCE_TIME = 500;
+const DEBOUNCE_TIME = 400;
 let debounceTimer;
 
 
 //Search cities
-const searchCitiesHandler = () => {
+const searchCitiesHandler = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  e.stopImmediatePropagation();
   clearSearch();
   clearTimeout(debounceTimer); 
   debounceTimer = setTimeout(() => {
@@ -79,7 +82,7 @@ const fetchCitiesData = async (query: string) => {
     const data = await searchCities(query);
     searchResults.value = data;
   } catch (err) {
-    error.value = err.message;
+    error.value = err;
   }
 };
 
@@ -93,7 +96,7 @@ const selectCityHandler = async (cityName: string) => {
     selectedCityName.value = cityName;
     showSidebar.value = true;
   } catch (err) {
-    error.value = err.message;
+    error.value = err;
   }
 };
 
