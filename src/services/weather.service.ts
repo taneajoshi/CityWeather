@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = 'https://api.weatherapi.com/v1';
+const baseURL = "https://api.weatherapi.com/v1";
 
 const weatherService = axios.create({
   baseURL,
@@ -16,7 +16,11 @@ export const searchCities = async (searchQuery) => {
     const response = await weatherService.get(`/search.json?q=${searchQuery}`);
     return response.data;
   } catch (err) {
-    throw new Error('Failed to retrieve data');
+    if (err.response && err.response.data && err.response.data.error) {
+      throw new Error(err.response.data.error.message);
+    } else {
+      throw new Error("Failed to retrieve data");
+    }
   }
 };
 
@@ -25,6 +29,10 @@ export const selectCity = async (cityName) => {
     const response = await weatherService.get(`/current.json?q=${cityName}`);
     return response.data.current;
   } catch (err) {
-    throw new Error('Failed to retrieve weather data');
+    if (err.response && err.response.data && err.response.data.error) {
+      throw new Error(err.response.data.error.message);
+    } else {
+      throw new Error("Failed to retrieve weather data");
+    }
   }
 };
