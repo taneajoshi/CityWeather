@@ -62,9 +62,6 @@ let debounceTimer;
 
 //Search cities
 const searchCitiesHandler = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  e.stopImmediatePropagation();
   clearSearch();
   clearTimeout(debounceTimer); 
   debounceTimer = setTimeout(() => {
