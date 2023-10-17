@@ -1,13 +1,13 @@
 <template>
   <aside
     id="cta-button-sidebar"
-    class="fixed top-0 left-0 z-40 w-3/4 h-screen transition-transform -translate-x-full sm:translate-x-0 bg-secondary text-white p-5 flex items-center justify-center"
+    class="fixed top-0 left-0 z-40 w-3/4 h-screen transition-transform sm:translate-x-0 bg-secondary text-white p-5 flex items-center justify-center"
     aria-label="Sidebar"
     v-if="showSidebarLocal"
   >
     <button
       @click="closeSidebar"
-      class="absolute top-2 right-2 text-xl cursor-pointer"
+      class="absolute top-2 right-4 text-3xl cursor-pointer"
     >
       &times;
     </button>
