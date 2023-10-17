@@ -1,7 +1,7 @@
 <template>
   <!-- Instead of page component as a wrapper (which includes header with slot , main and footer structure) using a heading for saving time. -->
   <h1 class="text-2xl font-bold p-5">Weather Dashboard</h1>
-  <div class="container mx-auto">
+  <div class="container mx-auto p-5">
     <div class="minHeight flex items-center justify-center">
       <div class="p-5 w-full sm:w-2/4 bg-white rounded-lg shadow-md">
         <h2 class="font-semibold mb-2">Enter a city</h2>
@@ -56,16 +56,36 @@ const selectedCity = ref<CityInterface | null>(null);
 const error = ref<string | null>(null);
 const selectedCityName = ref<string | null>(null);
 const showSidebar = ref<boolean>(false);
+const DEBOUNCE_TIME = 500;
+let debounceTimer;
 
-const searchCitiesHandler = async () => {
+
+//Search cities
+const searchCitiesHandler = () => {
+  clearSearch();
+  clearTimeout(debounceTimer); 
+  debounceTimer = setTimeout(() => {
+    if (searchQuery.value.trim() !== "") {
+      fetchCitiesData(searchQuery.value);
+    }
+  }, DEBOUNCE_TIME );
+};
+
+/** Fetch cities data based on the search query
+ * @param query
+ *  **/
+const fetchCitiesData = async (query: string) => {
   try {
-    const data = await searchCities(searchQuery.value);
+    const data = await searchCities(query);
     searchResults.value = data;
   } catch (err) {
     error.value = err.message;
   }
 };
 
+/** Fetch details of the selected city
+ * @param cityName
+ *  **/
 const selectCityHandler = async (cityName: string) => {
   try {
     const data = await selectCity(cityName);
@@ -77,6 +97,14 @@ const selectCityHandler = async (cityName: string) => {
   }
 };
 
+//Clear search history in case the value is empty.
+function clearSearch() {
+  if(searchQuery.value === "") {
+    searchResults.value = [];
+  }
+}
+
+//Close sidebar on click of close button in the weather details component.
 function closeSidebarHandler() {
   showSidebar.value = false;
 }
@@ -84,6 +112,6 @@ function closeSidebarHandler() {
 
 <style lang="scss" scoped>
 .minHeight {
-  min-height: calc(100vh - 4rem);
+  min-height: calc(100vh - 110px);
 }
 </style>
